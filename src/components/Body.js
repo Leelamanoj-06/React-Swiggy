@@ -6,6 +6,7 @@ import data from "../util/mockData";
 const Body = () => {
   //let dataList = data;
   // Use state hook
+  const [originalDataList, setOriginalDataList] = useState(data);
   const [dataList, setDataList] = useState(data);
   const [searchTerm, setSearchTerm] = useState("");
   useEffect(() => {
@@ -30,7 +31,7 @@ const Body = () => {
         <button
           className="filter-button"
           onClick={() => {
-            let dataListChanged = dataList.filter((res) => res.info.avgRating > 4.4);
+            let dataListChanged = originalDataList.filter((res) => res.info.avgRating > 4.4);
             setDataList(dataListChanged);
           }}
         >
@@ -39,6 +40,15 @@ const Body = () => {
       </div>
 
       <div className="res-search">
+        <form
+        onSubmit={(e) => {
+          e.preventDefault(); // prevent page refresh
+          let dataListSearched = originalDataList.filter((res) =>
+            res.info.name.toLowerCase().includes(searchTerm.toLowerCase())
+          );
+          setDataList(dataListSearched);
+        }}
+      >
         <input
           type="text"
           placeholder="Search for restaurants"
@@ -47,17 +57,10 @@ const Body = () => {
             setSearchTerm(e.target.value);
           }}
         />
-        <button
-          onClick={() => {
-            //setDataList(data);
-            let dataListSearched = dataList.filter((res) =>
-              res.info.name.toLowerCase().includes(searchTerm.toLowerCase())
-            );
-            setDataList(dataListSearched);
-          }}
-        >
+        <button type="submit">
           Search
         </button>
+        </form>
       </div>
       <div className="res-container">
         {dataList.map((res) => (
